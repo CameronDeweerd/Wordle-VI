@@ -9,7 +9,7 @@ TEST_PATH = pathlib.Path(__file__).parent
 
 @pytest.fixture
 def word_list_small():
-    return app.import_word_list(TEST_PATH / "answer_list_for_test.txt")
+    return app.WordleVIManager.import_word_list(TEST_PATH / "answer_list_for_test.txt")
 
 
 def test_ensure_solution_picked(word_list_small):
@@ -53,6 +53,7 @@ def test_history_update():
     assert GM1.guesses_history == [(['A', 'B', 'B', 'B', 'C'], ['O', 'O', 'X', 'X', '?'])]
     assert GM1.letter_status['A'] == 'O'
     assert GM1.letter_status['C'] == '?'
+    assert GM1.letter_status['F'] == ' '
     GM1.update_history('FFFFF', GM1.check_guess('FFFFF'))
     assert GM1.guesses_history == [(['A', 'B', 'B', 'B', 'C'], ['O', 'O', 'X', 'X', '?']),
                                    (['F', 'F', 'F', 'F', 'F'], ['X', 'X', 'X', 'X', 'X'])]

@@ -9,14 +9,16 @@ class GuessManager:
         self.solution = None
         self.solution_length = len(answer_words[0])
         self.guesses_history = []
-        self.letter_status = {'A': 'X', 'B': 'X', 'C': 'X', 'D': 'X', 'E': 'X', 'F': 'X', 'G': 'X', 'H': 'X', 'I': 'X',
-                              'J': 'X', 'K': 'X', 'L': 'X', 'M': 'X', 'N': 'X', 'O': 'X', 'P': 'X', 'Q': 'X', 'R': 'X',
-                              'S': 'X', 'T': 'X', 'U': 'X', 'V': 'X', 'W': 'X', 'X': 'X', 'Y': 'X', 'Z': 'X'}
+        self.letter_status = {'A': ' ', 'B': ' ', 'C': ' ', 'D': ' ', 'E': ' ', 'F': ' ', 'G': ' ', 'H': ' ', 'I': ' ',
+                              'J': ' ', 'K': ' ', 'L': ' ', 'M': ' ', 'N': ' ', 'O': ' ', 'P': ' ', 'Q': ' ', 'R': ' ',
+                              'S': ' ', 'T': ' ', 'U': ' ', 'V': ' ', 'W': ' ', 'X': ' ', 'Y': ' ', 'Z': ' '}
         self.select_solution(seed)
 
     def select_solution(self, seed=None):
         if seed:
             random.seed(seed)
+        else:
+            random.seed()
         random.shuffle(self.answer_words)
         day_offset = (datetime.datetime.today() - datetime.datetime.utcfromtimestamp(0)).days % len(self.answer_words)
         self.solution = self.answer_words[0 + day_offset]
@@ -26,7 +28,9 @@ class GuessManager:
         if self.verify_word(guess):
             checked_list = self.check_guess(guess)
             self.update_history(guess, checked_list)
-        return self.guesses_history, self.letter_status
+            return True
+        else:
+            return False
 
     def verify_word(self, word: str) -> bool:
         if word in self.legal_words and len(word) == self.solution_length:
@@ -55,5 +59,7 @@ class GuessManager:
         for index, character in enumerate(list(guess)):
             if checked_list[index] == 'O':
                 self.letter_status[character] = 'O'
-            if checked_list[index] == '?' and self.letter_status[character] == 'X':
+            elif checked_list[index] == '?' and self.letter_status[character] == ' ':
                 self.letter_status[character] = '?'
+            elif checked_list[index] == 'X' and self.letter_status[character] == ' ':
+                self.letter_status[character] = 'X'
